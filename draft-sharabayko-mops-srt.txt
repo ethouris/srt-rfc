@@ -5,12 +5,12 @@
 Network Working Group                                    M.P. Sharabayko
 Internet-Draft                                           M.A. Sharabayko
 Intended status: Informational             Haivision Network Video, GmbH
-Expires: 24 June 2021                                            J. Dube
+Expires: 7 August 2021                                           J. Dube
                                                  Haivision Systems, Inc.
                                                                  JS. Kim
                                                                  JW. Kim
                                                     SK Telecom Co., Ltd.
-                                                        21 December 2020
+                                                         3 February 2021
 
 
                             The SRT Protocol
@@ -46,21 +46,21 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 24 June 2021.
+   This Internet-Draft will expire on 7 August 2021.
 
 
 
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                  [Page 1]
+Sharabayko, et al.        Expires 7 August 2021                 [Page 1]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 Copyright Notice
 
-   Copyright (c) 2020 IETF Trust and the persons identified as the
+   Copyright (c) 2021 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
@@ -75,8 +75,8 @@ Copyright Notice
 Table of Contents
 
    1.  Introduction  . . . . . . . . . . . . . . . . . . . . . . . .   3
-     1.1.  Motivation  . . . . . . . . . . . . . . . . . . . . . . .   3
-     1.2.  Secure Reliable Transport Protocol  . . . . . . . . . . .   4
+     1.1.  Motivation  . . . . . . . . . . . . . . . . . . . . . . .   4
+     1.2.  Secure Reliable Transport Protocol  . . . . . . . . . . .   5
    2.  Terms and Definitions . . . . . . . . . . . . . . . . . . . .   6
    3.  Packet Structure  . . . . . . . . . . . . . . . . . . . . . .   6
      3.1.  Data Packets  . . . . . . . . . . . . . . . . . . . . . .   7
@@ -109,9 +109,9 @@ Table of Contents
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                  [Page 2]
+Sharabayko, et al.        Expires 7 August 2021                 [Page 2]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
      4.10. Round-Trip Time Estimation  . . . . . . . . . . . . . . .  50
@@ -149,9 +149,26 @@ Internet-Draft                     SRT                     December 2020
      B.3.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .  75
    Appendix C.  Changelog  . . . . . . . . . . . . . . . . . . . . .  75
      C.1.  Since Version 00  . . . . . . . . . . . . . . . . . . . .  75
+     C.2.  Since Version 01  . . . . . . . . . . . . . . . . . . . .  76
    Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  76
 
 1.  Introduction
+
+
+
+
+
+
+
+
+
+
+
+
+Sharabayko, et al.        Expires 7 August 2021                 [Page 3]
+
+Internet-Draft                     SRT                     February 2021
+
 
 1.1.  Motivation
 
@@ -162,13 +179,6 @@ Internet-Draft                     SRT                     December 2020
    streaming over TCP-based protocols like RTMP [RTMP] is possible at
    low bitrates and on a small scale, the exponential growth of the
    streaming market has created a need for more powerful solutions.
-
-
-
-Sharabayko, et al.        Expires 24 June 2021                  [Page 3]
-
-Internet-Draft                     SRT                     December 2020
-
 
    To improve scalability on the delivery side, content delivery
    networks (CDNs) at one point transitioned to segmentation-based
@@ -203,6 +213,19 @@ Internet-Draft                     SRT                     December 2020
    Request (ARQ), packet acknowledgments, end-to-end latency management,
    etc.
 
+
+
+
+
+
+
+
+
+Sharabayko, et al.        Expires 7 August 2021                 [Page 4]
+
+Internet-Draft                     SRT                     February 2021
+
+
 1.2.  Secure Reliable Transport Protocol
 
    Low latency video transmissions across reliable (usually local) IP
@@ -217,14 +240,6 @@ Internet-Draft                     SRT                     December 2020
    overhead to achieve the necessary level of packet loss recovery.
    Introducing selective packet retransmission (reliable UDP) to recover
    from packet loss removes those limitations.
-
-
-
-
-Sharabayko, et al.        Expires 24 June 2021                  [Page 4]
-
-Internet-Draft                     SRT                     December 2020
-
 
    Derived from the UDP-based Data Transfer (UDT) protocol [GHG04b], SRT
    is a user-level protocol that retains most of the core concepts and
@@ -259,6 +274,14 @@ Internet-Draft                     SRT                     December 2020
    Like TCP, SRT employs a listener/caller model.  The data flow is bi-
    directional and independent of the connection initiation - either the
    sender or receiver can operate as listener or caller to initiate a
+
+
+
+Sharabayko, et al.        Expires 7 August 2021                 [Page 5]
+
+Internet-Draft                     SRT                     February 2021
+
+
    connection.  The protocol provides an internal multiplexing
    mechanism, allowing multiple SRT connections to share the same UDP
    port, providing access control functionality to identify the caller
@@ -271,16 +294,6 @@ Internet-Draft                     SRT                     December 2020
 
    SRT maintains the ability for fast file transfers introduced in UDT,
    and adds support for AES encryption.
-
-
-
-
-
-
-Sharabayko, et al.        Expires 24 June 2021                  [Page 5]
-
-Internet-Draft                     SRT                     December 2020
-
 
 2.  Terms and Definitions
 
@@ -318,25 +331,14 @@ Internet-Draft                     SRT                     December 2020
    SRT has two types of packets distinguished by the Packet Type Flag:
    data packet and control packet.
 
-   The structure of the SRT packet is shown in Figure 2.
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-Sharabayko, et al.        Expires 24 June 2021                  [Page 6]
+Sharabayko, et al.        Expires 7 August 2021                 [Page 6]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
+
+   The structure of the SRT packet is shown in Figure 2.
 
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -387,11 +389,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-
-
-Sharabayko, et al.        Expires 24 June 2021                  [Page 7]
+Sharabayko, et al.        Expires 7 August 2021                 [Page 7]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
     0                   1                   2                   3
@@ -445,9 +445,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                  [Page 8]
+Sharabayko, et al.        Expires 7 August 2021                 [Page 8]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    Data: variable length.  The payload of the data packet.  The length
@@ -501,9 +501,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                  [Page 9]
+Sharabayko, et al.        Expires 7 August 2021                 [Page 9]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
       +===================+==============+=========+===============+
@@ -557,9 +557,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 10]
+Sharabayko, et al.        Expires 7 August 2021                [Page 10]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
     0                   1                   2                   3
@@ -613,9 +613,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 11]
+Sharabayko, et al.        Expires 7 August 2021                [Page 11]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
                   +=======+============================+
@@ -669,9 +669,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 12]
+Sharabayko, et al.        Expires 7 August 2021                [Page 12]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
       maximum number of data packets allowed to be "in flight" (i.e. the
@@ -725,9 +725,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 13]
+Sharabayko, et al.        Expires 7 August 2021                [Page 13]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
             +=======+====================+===================+
@@ -781,9 +781,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 14]
+Sharabayko, et al.        Expires 7 August 2021                [Page 14]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    SRT Version: 32 bits.  SRT library version MUST be formed as major *
@@ -837,9 +837,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 15]
+Sharabayko, et al.        Expires 7 August 2021                [Page 15]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    *  PERIODICNAK flag set indicates the peer will send periodic NAK
@@ -893,9 +893,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 16]
+Sharabayko, et al.        Expires 7 August 2021                [Page 16]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
     0                   1                   2                   3
@@ -949,9 +949,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 17]
+Sharabayko, et al.        Expires 7 August 2021                [Page 17]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    *  3: balancing group type,
@@ -1005,9 +1005,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 18]
+Sharabayko, et al.        Expires 7 August 2021                [Page 18]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
     0                   1                   2                   3
@@ -1061,9 +1061,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 19]
+Sharabayko, et al.        Expires 7 August 2021                [Page 19]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
       indicates which SEKs (odd and/or even) are provided in the
@@ -1117,9 +1117,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 20]
+Sharabayko, et al.        Expires 7 August 2021                [Page 20]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    SLen/4: 8 bits, value = {4}.  This is a fixed-width field for
@@ -1173,9 +1173,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 21]
+Sharabayko, et al.        Expires 7 August 2021                [Page 21]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 3.2.3.  Keep-Alive
@@ -1229,9 +1229,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 22]
+Sharabayko, et al.        Expires 7 August 2021                [Page 22]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 3.2.4.  ACK (Acknowledgment)
@@ -1285,9 +1285,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 23]
+Sharabayko, et al.        Expires 7 August 2021                [Page 23]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
       for future use.
@@ -1341,9 +1341,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 24]
+Sharabayko, et al.        Expires 7 August 2021                [Page 24]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    The Light ACK and Small ACK packets are used in cases when the
@@ -1397,9 +1397,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 25]
+Sharabayko, et al.        Expires 7 August 2021                [Page 25]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
       future definition.
@@ -1453,9 +1453,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 26]
+Sharabayko, et al.        Expires 7 August 2021                [Page 26]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 3.2.7.  ACKACK
@@ -1509,9 +1509,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 27]
+Sharabayko, et al.        Expires 7 August 2021                [Page 27]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 4.1.  Stream Multiplexing
@@ -1565,9 +1565,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 28]
+Sharabayko, et al.        Expires 7 August 2021                [Page 28]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    When the Order Flag of a Data packet is set to 1, this imposes a
@@ -1621,9 +1621,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 29]
+Sharabayko, et al.        Expires 7 August 2021                [Page 29]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    The handshake is performed between two parties: "Initiator" and
@@ -1677,9 +1677,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 30]
+Sharabayko, et al.        Expires 7 August 2021                [Page 30]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    2.  After receiving the above message from the peer: CONCLUSION
@@ -1733,9 +1733,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 31]
+Sharabayko, et al.        Expires 7 August 2021                [Page 31]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    The specification of the cipher family and block size is decided by
@@ -1789,9 +1789,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 32]
+Sharabayko, et al.        Expires 7 August 2021                [Page 32]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    *  Encryption Field: Advertised cipher family and block size
@@ -1845,9 +1845,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 33]
+Sharabayko, et al.        Expires 7 August 2021                [Page 33]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    *  SYN Cookie: the cookie previously received in the induction phase
@@ -1901,9 +1901,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 34]
+Sharabayko, et al.        Expires 7 August 2021                [Page 34]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    to itself" - that is, either connects to a local IP address, when the
@@ -1957,9 +1957,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 35]
+Sharabayko, et al.        Expires 7 August 2021                [Page 35]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    2.  Bob receives Alice's WAVEAHAND message, switches to the
@@ -2013,9 +2013,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 36]
+Sharabayko, et al.        Expires 7 August 2021                [Page 36]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
           -  sends Alice a message with Handshake Type AGREEMENT, but
@@ -2069,9 +2069,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 37]
+Sharabayko, et al.        Expires 7 August 2021                [Page 37]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    asynchronously: the state switches upon reception of a particular
@@ -2125,9 +2125,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 38]
+Sharabayko, et al.        Expires 7 August 2021                [Page 38]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
        *  Switches to Attention,
@@ -2181,9 +2181,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 39]
+Sharabayko, et al.        Expires 7 August 2021                [Page 39]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    3.  When the Initiator switches to the Connected state it responds
@@ -2237,9 +2237,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 40]
+Sharabayko, et al.        Expires 7 August 2021                [Page 40]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 4.5.  Timestamp-Based Packet Delivery
@@ -2293,9 +2293,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 41]
+Sharabayko, et al.        Expires 7 August 2021                [Page 41]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
                  |  Sending  |              |                   |
@@ -2349,9 +2349,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 42]
+Sharabayko, et al.        Expires 7 August 2021                [Page 42]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    PktTsbpdTime = TsbpdTimeBase + PKT_TIMESTAMP + TsbpdDelay + Drift
@@ -2405,9 +2405,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 43]
+Sharabayko, et al.        Expires 7 August 2021                [Page 43]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
        MAX_TIMESTAMP is equal to 0xFFFFFFFF, or the maximum value of
@@ -2461,9 +2461,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 44]
+Sharabayko, et al.        Expires 7 August 2021                [Page 44]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    <CODE BEGINS>
@@ -2517,9 +2517,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 45]
+Sharabayko, et al.        Expires 7 August 2021                [Page 45]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    A synchronized time is required to keep proper sender/receiver buffer
@@ -2573,9 +2573,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 46]
+Sharabayko, et al.        Expires 7 August 2021                [Page 46]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 4.8.  Acknowledgement and Lost Packet Handling
@@ -2629,9 +2629,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 47]
+Sharabayko, et al.        Expires 7 August 2021                [Page 47]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    already knows it.  Otherwise, ACKs (with outdated information) would
@@ -2685,9 +2685,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 48]
+Sharabayko, et al.        Expires 7 August 2021                [Page 48]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    There is a counter for the packets that are resent.  If there is no
@@ -2741,9 +2741,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 49]
+Sharabayko, et al.        Expires 7 August 2021                [Page 49]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 4.9.  Bidirectional Transmission Queues
@@ -2797,9 +2797,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 50]
+Sharabayko, et al.        Expires 7 August 2021                [Page 50]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    Note that an SRT socket can both send and receive data packets.  RTT
@@ -2853,9 +2853,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 51]
+Sharabayko, et al.        Expires 7 August 2021                [Page 51]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    This balance is achieved by adjusting the maximum allowed bandwidth
@@ -2909,9 +2909,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 52]
+Sharabayko, et al.        Expires 7 August 2021                [Page 52]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
        Note that INPUTBW_SET mode reduces to the MAXBW_SET mode and the
@@ -2965,9 +2965,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 53]
+Sharabayko, et al.        Expires 7 August 2021                [Page 53]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    | Mode / Variable       | MAX_BW | INPUT_BW | OVERHEAD |
@@ -3021,9 +3021,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 54]
+Sharabayko, et al.        Expires 7 August 2021                [Page 54]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    RTO is the amount of time within which an acknowledgement is expected
@@ -3077,9 +3077,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 55]
+Sharabayko, et al.        Expires 7 August 2021                [Page 55]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    The algorithm controls sending rate by tuning the packet sending
@@ -3133,9 +3133,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 56]
+Sharabayko, et al.        Expires 7 August 2021                [Page 56]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    <CODE BEGINS>
@@ -3189,9 +3189,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 57]
+Sharabayko, et al.        Expires 7 August 2021                [Page 57]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    *  RC_INTERVAL is the fixed rate control interval, in microseconds.
@@ -3245,9 +3245,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 58]
+Sharabayko, et al.        Expires 7 August 2021                [Page 58]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    LastRCTime = currTime
@@ -3301,9 +3301,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 59]
+Sharabayko, et al.        Expires 7 August 2021                [Page 59]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    *  EST_LINK_CAPACITY is the estimated link capacity reported by the
@@ -3357,9 +3357,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 60]
+Sharabayko, et al.        Expires 7 August 2021                [Page 60]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    c.  Stop.
@@ -3413,9 +3413,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 61]
+Sharabayko, et al.        Expires 7 August 2021                [Page 61]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    Congestion period is defined as the time between two NAKs in which
@@ -3469,9 +3469,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 62]
+Sharabayko, et al.        Expires 7 August 2021                [Page 62]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    The detailed description of models used to estimate link capacity and
@@ -3525,9 +3525,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 63]
+Sharabayko, et al.        Expires 7 August 2021                [Page 63]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    IV = MSB(112, Salt): Most significant 112 bits of the salt.
@@ -3581,9 +3581,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 64]
+Sharabayko, et al.        Expires 7 August 2021                [Page 64]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    (generated and transmitted by the initiator) is random, and cannot be
@@ -3637,9 +3637,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 65]
+Sharabayko, et al.        Expires 7 August 2021                [Page 65]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    Even and odd keys are alternated during transmission the following
@@ -3693,9 +3693,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 66]
+Sharabayko, et al.        Expires 7 August 2021                [Page 66]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 6.2.2.  Encrypting the Payload
@@ -3749,9 +3749,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 67]
+Sharabayko, et al.        Expires 7 August 2021                [Page 67]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
 6.3.2.  Decrypting the Payload
@@ -3805,9 +3805,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 68]
+Sharabayko, et al.        Expires 7 August 2021                [Page 68]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    *  SRT has a certain protection from DoS attacks, see Section 4.3.
@@ -3861,9 +3861,9 @@ Normative References
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 69]
+Sharabayko, et al.        Expires 7 August 2021                [Page 69]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    [GHG04b]   Gu, Y., Hong, X., and R.L. Grossman, "Experiences in
@@ -3888,7 +3888,7 @@ Informative References
               197.pdf>.
 
    [AV1]      Rivaz, P.d. and J. Haughton, "AV1 Bitstream & Decoding
-              Process Specification", December 2020,
+              Process Specification", February 2021,
               <https://aomediacodec.github.io/av1-spec/av1-spec.pdf>.
 
    [BBR]      Cardwell, N., Cheng, Y., Gunn, C.S., Yeganeh, S.H., and V.
@@ -3917,27 +3917,27 @@ Informative References
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 70]
+Sharabayko, et al.        Expires 7 August 2021                [Page 70]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    [I-D.ietf-quic-transport]
               Iyengar, J. and M. Thomson, "QUIC: A UDP-Based Multiplexed
               and Secure Transport", Work in Progress, Internet-Draft,
-              draft-ietf-quic-transport-33, 13 December 2020,
+              draft-ietf-quic-transport-34, 14 January 2021,
               <http://www.ietf.org/internet-drafts/draft-ietf-quic-
-              transport-33.txt>.
+              transport-34.txt>.
 
    [ISO13818-1]
               ISO, "Information technology — Generic coding of moving
               pictures and associated audio information: Systems", ISO/
-              IEC 13818-1, December 2020.
+              IEC 13818-1, February 2021.
 
    [ISO23009] ISO, "Information technology — Dynamic adaptive streaming
-              over HTTP (DASH)", ISO/IEC 23009:2019, December 2020.
+              over HTTP (DASH)", ISO/IEC 23009:2019, February 2021.
 
-   [PNPID]    "PNP ID AND ACPI ID REGISTRY", December 2020,
+   [PNPID]    "PNP ID AND ACPI ID REGISTRY", February 2021,
               <https://uefi.org/PNP_ACPI_Registry>.
 
    [RFC2104]  Krawczyk, H., Bellare, M., and R. Canetti, "HMAC: Keyed-
@@ -3973,9 +3973,9 @@ Internet-Draft                     SRT                     December 2020
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 71]
+Sharabayko, et al.        Expires 7 August 2021                [Page 71]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    [RFC8216]  Pantos, R., Ed. and W. May, "HTTP Live Streaming",
@@ -3987,20 +3987,20 @@ Internet-Draft                     SRT                     December 2020
               RFC 8312, DOI 10.17487/RFC8312, February 2018,
               <https://www.rfc-editor.org/info/rfc8312>.
 
-   [RTMP]     "Real-Time Messaging Protocol", December 2020,
+   [RTMP]     "Real-Time Messaging Protocol", February 2021,
               <https://www.adobe.com/devnet/rtmp.html>.
 
    [SP800-38A]
               Dworkin, M., "Recommendation for Block Cipher Modes of
               Operation", December 2001.
 
-   [SRTSRC]   "SRT fully functional reference implementation", December
-              2020, <https://github.com/Haivision/srt>.
+   [SRTSRC]   "SRT fully functional reference implementation", February
+              2021, <https://github.com/Haivision/srt>.
 
    [SRTTO]    Dube, J. and S. Matthews, "SRT Protocol Technical
               Overview", December 2019.
 
-   [VP9]      WebM, "VP9 Video Codec", December 2020,
+   [VP9]      WebM, "VP9 Video Codec", February 2021,
               <https://www.webmproject.org/vp9>.
 
 Appendix A.  Packet Sequence List Coding
@@ -4029,9 +4029,9 @@ Appendix A.  Packet Sequence List Coding
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 72]
+Sharabayko, et al.        Expires 7 August 2021                [Page 72]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
     0                   1                   2                   3
@@ -4085,9 +4085,9 @@ B.1.  General Syntax
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 73]
+Sharabayko, et al.        Expires 7 August 2021                [Page 73]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
    key1=value1,key2=value2...
@@ -4141,9 +4141,9 @@ B.2.  Standard Keys
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 74]
+Sharabayko, et al.        Expires 7 August 2021                [Page 74]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
       -  auth: for exchanging sensible data.  The r value states its
@@ -4183,36 +4183,54 @@ Appendix C.  Changelog
 
 C.1.  Since Version 00
 
-   *  Improved and extended the description of "Encryption" section,
+   *  Improved and extended the description of "Encryption" section.
 
    *  Improved and extended the description of "Round-Trip Time
-      Estimation" section,
+      Estimation" section.
 
    *  Extended the description of "Handshake" section with "Stream ID
-      Extension Message", "Group Membership Extension" subsections,
+      Extension Message", "Group Membership Extension" subsections.
 
    *  Extended "Handshake Messages" section with the detailed
-      description of handshake procedure,
+      description of handshake procedure.
 
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 75]
+Sharabayko, et al.        Expires 7 August 2021                [Page 75]
 
-Internet-Draft                     SRT                     December 2020
+Internet-Draft                     SRT                     February 2021
 
 
-   *  Improved "Key Material" section description,
+   *  Improved "Key Material" section description.
 
    *  Changed packet structure formatting for "Packet Structure"
-      section,
+      section.
 
    *  Did minor additions to the "Acknowledgement and Lost Packet
-      Handling" section,
+      Handling" section.
 
-   *  Fixed broken links,
+   *  Fixed broken links.
 
    *  Extended the list of references.
+
+C.2.  Since Version 01
+
+   *  Extended "Congestion Control" section with the detailed
+      description of SRT packet pacing for both live streaming and file/
+      message transmission cases.
+
+   *  Improved "Group Membership Extension" section.
+
+   *  Reworked "Security Consideration" section.
+
+   *  Changed the workgroup from "MOPS" to "Network Working Group".
+
+   *  Changed the intended status of the document from "Standards Track"
+      to "Informational".
+
+   *  Overall corrections throughout the document: fixed lists,
+      punctuation, etc.
 
 Authors' Addresses
 
@@ -4234,6 +4252,12 @@ Authors' Addresses
    Email: jdube@haivision.com
 
 
+
+Sharabayko, et al.        Expires 7 August 2021                [Page 76]
+
+Internet-Draft                     SRT                     February 2021
+
+
    Jeongseok Kim
    SK Telecom Co., Ltd.
 
@@ -4253,4 +4277,36 @@ Authors' Addresses
 
 
 
-Sharabayko, et al.        Expires 24 June 2021                 [Page 76]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Sharabayko, et al.        Expires 7 August 2021                [Page 77]
