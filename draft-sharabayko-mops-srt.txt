@@ -86,26 +86,26 @@ Table of Contents
        3.2.3.  Keep-Alive  . . . . . . . . . . . . . . . . . . . . .  22
        3.2.4.  ACK (Acknowledgment)  . . . . . . . . . . . . . . . .  23
        3.2.5.  NAK (Loss Report) . . . . . . . . . . . . . . . . . .  25
-       3.2.6.  Shutdown  . . . . . . . . . . . . . . . . . . . . . .  26
-       3.2.7.  ACKACK  . . . . . . . . . . . . . . . . . . . . . . .  27
-   4.  SRT Data Transmission and Control . . . . . . . . . . . . . .  27
-     4.1.  Stream Multiplexing . . . . . . . . . . . . . . . . . . .  28
-     4.2.  Data Transmission Modes . . . . . . . . . . . . . . . . .  28
-       4.2.1.  Message Mode  . . . . . . . . . . . . . . . . . . . .  28
-       4.2.2.  Live Mode . . . . . . . . . . . . . . . . . . . . . .  29
-       4.2.3.  Buffer Mode . . . . . . . . . . . . . . . . . . . . .  29
-     4.3.  Handshake Messages  . . . . . . . . . . . . . . . . . . .  29
-       4.3.1.  Caller-Listener Handshake . . . . . . . . . . . . . .  32
-       4.3.2.  Rendezvous Handshake  . . . . . . . . . . . . . . . .  34
-     4.4.  SRT Buffer Latency  . . . . . . . . . . . . . . . . . . .  40
-     4.5.  Timestamp-Based Packet Delivery . . . . . . . . . . . . .  41
-       4.5.1.  Packet Delivery Time  . . . . . . . . . . . . . . . .  42
-     4.6.  Too-Late Packet Drop  . . . . . . . . . . . . . . . . . .  44
-     4.7.  Drift Management  . . . . . . . . . . . . . . . . . . . .  45
-     4.8.  Acknowledgement and Lost Packet Handling  . . . . . . . .  47
-       4.8.1.  Packet Acknowledgement (ACKs, ACKACKs)  . . . . . . .  47
-       4.8.2.  Packet Retransmission (NAKs)  . . . . . . . . . . . .  48
-     4.9.  Bidirectional Transmission Queues . . . . . . . . . . . .  50
+       3.2.6.  Congestion Warning  . . . . . . . . . . . . . . . . .  26
+       3.2.7.  Shutdown  . . . . . . . . . . . . . . . . . . . . . .  27
+       3.2.8.  ACKACK  . . . . . . . . . . . . . . . . . . . . . . .  27
+       3.2.9.  Message Drop Request  . . . . . . . . . . . . . . . .  28
+       3.2.10. Peer Error  . . . . . . . . . . . . . . . . . . . . .  29
+   4.  SRT Data Transmission and Control . . . . . . . . . . . . . .  30
+     4.1.  Stream Multiplexing . . . . . . . . . . . . . . . . . . .  30
+     4.2.  Data Transmission Modes . . . . . . . . . . . . . . . . .  31
+       4.2.1.  Message Mode  . . . . . . . . . . . . . . . . . . . .  31
+       4.2.2.  Live Mode . . . . . . . . . . . . . . . . . . . . . .  32
+       4.2.3.  Buffer Mode . . . . . . . . . . . . . . . . . . . . .  32
+     4.3.  Handshake Messages  . . . . . . . . . . . . . . . . . . .  32
+       4.3.1.  Caller-Listener Handshake . . . . . . . . . . . . . .  35
+       4.3.2.  Rendezvous Handshake  . . . . . . . . . . . . . . . .  37
+     4.4.  SRT Buffer Latency  . . . . . . . . . . . . . . . . . . .  43
+     4.5.  Timestamp-Based Packet Delivery . . . . . . . . . . . . .  44
+       4.5.1.  Packet Delivery Time  . . . . . . . . . . . . . . . .  45
+     4.6.  Too-Late Packet Drop  . . . . . . . . . . . . . . . . . .  47
+     4.7.  Drift Management  . . . . . . . . . . . . . . . . . . . .  48
+     4.8.  Acknowledgement and Lost Packet Handling  . . . . . . . .  50
 
 
 
@@ -114,48 +114,48 @@ Sharabayko, et al.       Expires 22 August 2021                 [Page 2]
 Internet-Draft                     SRT                     February 2021
 
 
-     4.10. Round-Trip Time Estimation  . . . . . . . . . . . . . . .  50
-   5.  SRT Packet Pacing and Congestion Control  . . . . . . . . . .  51
-     5.1.  SRT Packet Pacing and Live Congestion Control (LiveCC)  .  51
-       5.1.1.  Configuring Maximum Bandwidth . . . . . . . . . . . .  52
-       5.1.2.  SRT's Default LiveCC Algorithm  . . . . . . . . . . .  54
-     5.2.  File Transfer Congestion Control (FileCC) . . . . . . . .  55
-       5.2.1.  SRT's Default FileCC Algorithm  . . . . . . . . . . .  55
-   6.  Encryption  . . . . . . . . . . . . . . . . . . . . . . . . .  63
-     6.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .  63
-       6.1.1.  Encryption Scope  . . . . . . . . . . . . . . . . . .  63
-       6.1.2.  AES Counter . . . . . . . . . . . . . . . . . . . . .  63
-       6.1.3.  Stream Encrypting Key (SEK) . . . . . . . . . . . . .  64
-       6.1.4.  Key Encrypting Key (KEK)  . . . . . . . . . . . . . .  64
-       6.1.5.  Key Material Exchange . . . . . . . . . . . . . . . .  64
-       6.1.6.  KM Refresh  . . . . . . . . . . . . . . . . . . . . .  65
-     6.2.  Encryption Process  . . . . . . . . . . . . . . . . . . .  66
-       6.2.1.  Generating the Stream Encrypting Key  . . . . . . . .  66
-       6.2.2.  Encrypting the Payload  . . . . . . . . . . . . . . .  67
-     6.3.  Decryption Process  . . . . . . . . . . . . . . . . . . .  67
-       6.3.1.  Restoring the Stream Encrypting Key . . . . . . . . .  67
-       6.3.2.  Decrypting the Payload  . . . . . . . . . . . . . . .  68
-   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  68
-   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  69
-   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  69
-   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .  69
-   References  . . . . . . . . . . . . . . . . . . . . . . . . . . .  69
-     Normative References  . . . . . . . . . . . . . . . . . . . . .  69
-     Informative References  . . . . . . . . . . . . . . . . . . . .  70
-   Appendix A.  Packet Sequence List Coding  . . . . . . . . . . . .  72
-   Appendix B.  SRT Access Control . . . . . . . . . . . . . . . . .  73
-     B.1.  General Syntax  . . . . . . . . . . . . . . . . . . . . .  73
-     B.2.  Standard Keys . . . . . . . . . . . . . . . . . . . . . .  74
-     B.3.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .  75
-   Appendix C.  Changelog  . . . . . . . . . . . . . . . . . . . . .  75
-     C.1.  Since Version 00  . . . . . . . . . . . . . . . . . . . .  75
-     C.2.  Since Version 01  . . . . . . . . . . . . . . . . . . . .  76
-   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  76
+       4.8.1.  Packet Acknowledgement (ACKs, ACKACKs)  . . . . . . .  50
+       4.8.2.  Packet Retransmission (NAKs)  . . . . . . . . . . . .  51
+     4.9.  Bidirectional Transmission Queues . . . . . . . . . . . .  53
+     4.10. Round-Trip Time Estimation  . . . . . . . . . . . . . . .  53
+   5.  SRT Packet Pacing and Congestion Control  . . . . . . . . . .  54
+     5.1.  SRT Packet Pacing and Live Congestion Control (LiveCC)  .  54
+       5.1.1.  Configuring Maximum Bandwidth . . . . . . . . . . . .  55
+       5.1.2.  SRT's Default LiveCC Algorithm  . . . . . . . . . . .  57
+     5.2.  File Transfer Congestion Control (FileCC) . . . . . . . .  58
+       5.2.1.  SRT's Default FileCC Algorithm  . . . . . . . . . . .  58
+   6.  Encryption  . . . . . . . . . . . . . . . . . . . . . . . . .  66
+     6.1.  Overview  . . . . . . . . . . . . . . . . . . . . . . . .  66
+       6.1.1.  Encryption Scope  . . . . . . . . . . . . . . . . . .  66
+       6.1.2.  AES Counter . . . . . . . . . . . . . . . . . . . . .  66
+       6.1.3.  Stream Encrypting Key (SEK) . . . . . . . . . . . . .  67
+       6.1.4.  Key Encrypting Key (KEK)  . . . . . . . . . . . . . .  67
+       6.1.5.  Key Material Exchange . . . . . . . . . . . . . . . .  67
+       6.1.6.  KM Refresh  . . . . . . . . . . . . . . . . . . . . .  68
+     6.2.  Encryption Process  . . . . . . . . . . . . . . . . . . .  69
+       6.2.1.  Generating the Stream Encrypting Key  . . . . . . . .  69
+       6.2.2.  Encrypting the Payload  . . . . . . . . . . . . . . .  70
+     6.3.  Decryption Process  . . . . . . . . . . . . . . . . . . .  70
+       6.3.1.  Restoring the Stream Encrypting Key . . . . . . . . .  70
+       6.3.2.  Decrypting the Payload  . . . . . . . . . . . . . . .  71
+   7.  Security Considerations . . . . . . . . . . . . . . . . . . .  71
+   8.  IANA Considerations . . . . . . . . . . . . . . . . . . . . .  72
+   Contributors  . . . . . . . . . . . . . . . . . . . . . . . . . .  72
+   Acknowledgments . . . . . . . . . . . . . . . . . . . . . . . . .  72
+   References  . . . . . . . . . . . . . . . . . . . . . . . . . . .  72
+     Normative References  . . . . . . . . . . . . . . . . . . . . .  72
+     Informative References  . . . . . . . . . . . . . . . . . . . .  73
+   Appendix A.  Packet Sequence List Coding  . . . . . . . . . . . .  75
+   Appendix B.  SRT Access Control . . . . . . . . . . . . . . . . .  76
+     B.1.  General Syntax  . . . . . . . . . . . . . . . . . . . . .  76
+     B.2.  Standard Keys . . . . . . . . . . . . . . . . . . . . . .  77
+     B.3.  Examples  . . . . . . . . . . . . . . . . . . . . . . . .  78
+   Appendix C.  Changelog  . . . . . . . . . . . . . . . . . . . . .  78
+     C.1.  Since Version 00  . . . . . . . . . . . . . . . . . . . .  78
+     C.2.  Since Version 01  . . . . . . . . . . . . . . . . . . . .  79
+   Authors' Addresses  . . . . . . . . . . . . . . . . . . . . . . .  79
 
 1.  Introduction
-
-
-
 
 
 
@@ -506,23 +506,29 @@ Sharabayko, et al.       Expires 22 August 2021                 [Page 9]
 Internet-Draft                     SRT                     February 2021
 
 
-      +===================+==============+=========+===============+
-      | Packet Type       | Control Type | Subtype | Section       |
-      +===================+==============+=========+===============+
-      | HANDSHAKE         |    0x0000    |   0x0   | Section 3.2.1 |
-      +-------------------+--------------+---------+---------------+
-      | KEEPALIVE         |    0x0001    |   0x0   | Section 3.2.3 |
-      +-------------------+--------------+---------+---------------+
-      | ACK               |    0x0002    |   0x0   | Section 3.2.4 |
-      +-------------------+--------------+---------+---------------+
-      | NAK (Loss Report) |    0x0003    |   0x0   | Section 3.2.5 |
-      +-------------------+--------------+---------+---------------+
-      | SHUTDOWN          |    0x0005    |   0x0   | Section 3.2.6 |
-      +-------------------+--------------+---------+---------------+
-      | ACKACK            |    0x0006    |   0x0   | Section 3.2.7 |
-      +-------------------+--------------+---------+---------------+
-      | User-Defined Type |    0x7FFF    |    -    | N/A           |
-      +-------------------+--------------+---------+---------------+
+     +====================+==============+=========+================+
+     | Packet Type        | Control Type | Subtype | Section        |
+     +====================+==============+=========+================+
+     | HANDSHAKE          |    0x0000    |   0x0   | Section 3.2.1  |
+     +--------------------+--------------+---------+----------------+
+     | KEEPALIVE          |    0x0001    |   0x0   | Section 3.2.3  |
+     +--------------------+--------------+---------+----------------+
+     | ACK                |    0x0002    |   0x0   | Section 3.2.4  |
+     +--------------------+--------------+---------+----------------+
+     | NAK (Loss Report)  |    0x0003    |   0x0   | Section 3.2.5  |
+     +--------------------+--------------+---------+----------------+
+     | Congestion Warning |    0x0004    |   0x0   | Section 3.2.6  |
+     +--------------------+--------------+---------+----------------+
+     | SHUTDOWN           |    0x0005    |   0x0   | Section 3.2.7  |
+     +--------------------+--------------+---------+----------------+
+     | ACKACK             |    0x0006    |   0x0   | Section 3.2.8  |
+     +--------------------+--------------+---------+----------------+
+     | DROPREQ            |    0x0007    |   0x0   | Section 3.2.9  |
+     +--------------------+--------------+---------+----------------+
+     | PEERERROR          |    0x0008    |   0x0   | Section 3.2.10 |
+     +--------------------+--------------+---------+----------------+
+     | User-Defined Type  |    0x7FFF    |    -    | N/A            |
+     +--------------------+--------------+---------+----------------+
 
                     Table 1: SRT Control Packet Types
 
@@ -534,12 +540,6 @@ Internet-Draft                     SRT                     February 2021
 
    The Control Information Field (CIF) of a handshake control packet is
    shown in Figure 5.
-
-
-
-
-
-
 
 
 
@@ -1336,7 +1336,7 @@ Internet-Draft                     SRT                     February 2021
       set to 0.
 
    The sender only acknowledges the receipt of Full ACK packets (see
-   Section 3.2.7).
+   Section 3.2.8).
 
 
 
@@ -1412,7 +1412,53 @@ Internet-Draft                     SRT                     February 2021
       packets sequence numbers.  See packet sequence number coding in
       Appendix A.
 
-3.2.6.  Shutdown
+3.2.6.  Congestion Warning
+
+   The Congestion Warning control packet is not in use by SRT sender at
+   the moment and reserved for the future.  However, the receiver
+   handles this type of packet if it ever arrives.
+
+   If the receiver receives this packet, it slows down sending rate
+   increasing the minimum inter packet sending interval by 12.5%.
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+- SRT Header +-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1|      Control Type = 4       |         Reserved = 0          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                 Type-specific Information = 0                 |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                           Timestamp                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                     Destination Socket ID                     |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                Figure 15: Congestion Warning control packet
+
+   Packet Type: 1 bit, value = 1.  The packet type value of a Congestion
+      Warning control packet is "1".
+
+   Control Type: 15 bits, value = 4.  The control type value of a
+      Congestion Warning control packet is "4".
+
+   Timestamp: 32 bits.  See Section 3.
+
+   Destination Socket ID: 32 bits.  See Section 3.
+
+   Type-specific Information.  This field is reserved for future
+      definition.
+
+
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 26]
+
+Internet-Draft                     SRT                     February 2021
+
+
+3.2.7.  Shutdown
 
    Shutdown control packets are used to initiate the closing of an SRT
    connection.
@@ -1431,7 +1477,7 @@ Internet-Draft                     SRT                     February 2021
    |                     Destination Socket ID                     |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-                     Figure 15: Shutdown control packet
+                     Figure 16: Shutdown control packet
 
    Packet Type: 1 bit, value = 1.  The packet type value of a shutdown
       control packet is "1".
@@ -1449,21 +1495,24 @@ Internet-Draft                     SRT                     February 2021
    Shutdown control packets do not contain Control Information Field
    (CIF).
 
-
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 26]
-
-Internet-Draft                     SRT                     February 2021
-
-
-3.2.7.  ACKACK
+3.2.8.  ACKACK
 
    ACKACK control packets are sent to acknowledge the reception of a
    Full ACK, and are used in the calculation of RTT by the receiver.
 
    An SRT ACKACK Control packet is formatted as follows:
+
+
+
+
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 27]
+
+Internet-Draft                     SRT                     February 2021
+
 
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -1477,7 +1526,7 @@ Internet-Draft                     SRT                     February 2021
    |                     Destination Socket ID                     |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-                      Figure 16: ACKACK control packet
+                      Figure 17: ACKACK control packet
 
    Packet Type: 1 bit, value = 1.  The packet type value of an ACKACK
       control packet is "1".
@@ -1496,6 +1545,117 @@ Internet-Draft                     SRT                     February 2021
    ACKACK control packets do not contain Control Information Field
    (CIF).
 
+3.2.9.  Message Drop Request
+
+   A Message Drop Request control packet is sent by the sender to the
+   receiver when it requests the retransmission of an unacknowledged
+   packet (all or part of a message) which is not present in the
+   sender's buffer (due to an internal error).  The sender notifies the
+   receiver that it must not wait for retransmission of this message.
+   Note that a Message Drop Request control packet is not sent if the
+   Too Late Packet Drop mechanism (Section 4.6) causes the sender to
+   drop a message, as in this case the receiver is expected to drop it
+   anyway.
+
+
+
+
+
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 28]
+
+Internet-Draft                     SRT                     February 2021
+
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+- SRT Header +-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1|      Control Type = 7       |         Reserved = 0          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                        Message Number                         |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                           Timestamp                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                     Destination Socket ID                     |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                 First Packet Sequence Number                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                  Last Packet Sequence Number                  |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                   Figure 18: Drop Request control packet
+
+   Packet Type: 1 bit, value = 1.  The packet type value of a Drop
+      Request control packet is "1".
+
+   Control Type: 15 bits, value = 7.  The control type value of a Drop
+      Request control packet is "7".
+
+   Message Number: 32 bits.  The identifying number of the message
+      requested to be dropped.  See the Message Number field in
+      Section 3.1.
+
+   Timestamp: 32 bits.  See Section 3.
+
+   Destination Socket ID: 32 bits.  See Section 3.
+
+   First Packet Sequence Number: 32 bits.  The sequence number of the
+      first packet in the message.
+
+   Last Packet Sequence Number: 32 bits.  The sequence number of the
+      last packet in the message.
+
+3.2.10.  Peer Error
+
+   The Peer Error control packet is sent by a receiver when a processing
+   error (e.g. write to disk failure) occurs.  This informs the sender
+   of the situation and unblocks it from waiting for further responses
+   from the receiver.
+
+   The sender receiving this type of control packet must unblock any
+   sending operation in progress.
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 29]
+
+Internet-Draft                     SRT                     February 2021
+
+
+   *NOTE*: This control packet is only used if file congestion control
+   is enabled.
+
+    0                   1                   2                   3
+    0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
+   +-+-+-+-+-+-+-+-+-+-+-+-+- SRT Header +-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |1|      Control Type = 8       |         Reserved = 0          |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                          Error Code                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                           Timestamp                           |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+   |                     Destination Socket ID                     |
+   +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+
+                    Figure 19: Peer Error control packet
+
+   Packet Type: 1 bit, value = 1.  The packet type value of a Peer Error
+      control packet is "1".
+
+   Control Type: 15 bits, value = 8.  The control type value of a Peer
+      Error control packet is "8".
+
+   Error Code: 32 bits.  Peer error code.  At the moment the only value
+      defined is 4000 - file system error.
+
+   Timestamp: 32 bits.  See Section 3.
+
+   Destination Socket ID: 32 bits.  See Section 3.
+
 4.  SRT Data Transmission and Control
 
    This section describes key concepts related to the handling of
@@ -1507,18 +1667,20 @@ Internet-Draft                     SRT                     February 2021
    by SRT, the sender and receiver must handle control packets, timers,
    and buffers for the connection as specified in this section.
 
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 27]
-
-Internet-Draft                     SRT                     February 2021
-
-
 4.1.  Stream Multiplexing
 
    Multiple SRT sockets may share the same UDP socket so that the
    packets received to this UDP socket will be correctly dispatched to
    those SRT sockets they are currently destined.
+
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 30]
+
+Internet-Draft                     SRT                     February 2021
+
 
    During the handshake, the parties exchange their SRT Socket IDs.
    These IDs are then used in the Destination Socket ID field of every
@@ -1562,18 +1724,19 @@ Internet-Draft                     SRT                     February 2021
    complete (all packets are received) the application will not be
    allowed to read it.
 
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 28]
-
-Internet-Draft                     SRT                     February 2021
-
-
    When the Order Flag of a Data packet is set to 1, this imposes a
    sequential reading order on messages.  An Order Flag set to 0 allows
    an application to read messages that are already fully available,
    before any preceding messages that may have some packets missing.
+
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 31]
+
+Internet-Draft                     SRT                     February 2021
+
 
 4.2.2.  Live Mode
 
@@ -1617,20 +1780,19 @@ Internet-Draft                     SRT                     February 2021
 
    2.  Rendezvous, where both sides attempt to initiate a connection.
 
-
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 29]
-
-Internet-Draft                     SRT                     February 2021
-
-
    The handshake is performed between two parties: "Initiator" and
    "Responder" in the following order:
 
    *  Initiator starts an extended SRT handshake process and sends
       appropriate SRT extended handshake requests.
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 32]
+
+Internet-Draft                     SRT                     February 2021
+
 
    *  Responder expects the SRT extended handshake requests to be sent
       by the Initiator and sends SRT extended handshake responses back.
@@ -1674,17 +1836,19 @@ Internet-Draft                     SRT                     February 2021
 
    1.  After starting the connection: WAVEAHAND
 
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 30]
-
-Internet-Draft                     SRT                     February 2021
-
-
    2.  After receiving the above message from the peer: CONCLUSION
 
    3.  After receiving the above message from the peer: AGREEMENT.
+
+
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 33]
+
+Internet-Draft                     SRT                     February 2021
+
 
    When a connection process has failed before either party can send the
    CONCLUSION handshake, the Handshake Type field will contain the
@@ -1729,20 +1893,19 @@ Internet-Draft                     SRT                     February 2021
 
                  Table 7: Handshake Rejection Reason Codes
 
-
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 31]
-
-Internet-Draft                     SRT                     February 2021
-
-
    The specification of the cipher family and block size is decided by
    the data Sender.  When the transmission is bidirectional, this value
    MUST be agreed upon at the outset because when both are set the
    Responder wins.  For Caller-Listener connections it is reasonable to
    set this value on the Listener only.  In the case of Rendezvous the
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 34]
+
+Internet-Draft                     SRT                     February 2021
+
+
    only reasonable approach is to decide upon the correct value from the
    different sources and to set it on both parties (note that *AES-128*
    is the default).
@@ -1786,19 +1949,18 @@ Internet-Draft                     SRT                     February 2021
 
    *  Version: 5
 
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 32]
-
-Internet-Draft                     SRT                     February 2021
-
-
    *  Encryption Field: Advertised cipher family and block size
 
    *  Extension Field: SRT magic code 0x4A17
 
    *  Handshake Type: INDUCTION
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 35]
+
+Internet-Draft                     SRT                     February 2021
+
 
    *  SRT Socket ID: Socket ID of the Listener
 
@@ -1843,16 +2005,18 @@ Internet-Draft                     SRT                     February 2021
 
    *  SRT Socket ID: Socket ID of the Caller
 
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 33]
-
-Internet-Draft                     SRT                     February 2021
-
-
    *  SYN Cookie: the cookie previously received in the induction phase
 
    *  Encryption Flags: advertised cipher family and block size
+
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 36]
+
+Internet-Draft                     SRT                     February 2021
+
 
    *  Extension Flags: a set of flags that define the extensions
       provided in the handshake
@@ -1898,18 +2062,18 @@ Internet-Draft                     SRT                     February 2021
    to the same NIC and port and operating independently, it is virtually
    impossible that the parties will generate identical cookies.
    However, this situation may occur if an application tries to "connect
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 34]
-
-Internet-Draft                     SRT                     February 2021
-
-
    to itself" - that is, either connects to a local IP address, when the
    socket is bound to INADDR_ANY, or to the same IP address to which the
    socket was bound.  If the cookies are identical (for any reason), the
    connection will not be made until new, unique cookies are generated
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 37]
+
+Internet-Draft                     SRT                     February 2021
+
+
    (after a delay of up to one minute).  In the case of an application
    "connecting to itself", the cookies will always be identical, and so
    the connection will never be established.
@@ -1953,20 +2117,18 @@ Internet-Draft                     SRT                     February 2021
        not be interpreted by the Version 4 peer when the Handshake Type
        is WAVEAHAND.
 
-
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 35]
-
-Internet-Draft                     SRT                     February 2021
-
-
    2.  Bob receives Alice's WAVEAHAND message, switches to the
        "attention" state.  Since Bob now knows Alice's cookie, he
        performs a "cookie contest" (compares both cookie values).  If
        Bob's cookie is greater than Alice's, he will become the
        Initiator.  Otherwise, he will become the Responder.
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 38]
+
+Internet-Draft                     SRT                     February 2021
+
 
        The resolution of the Handshake Role (Initiator or Responder) is
        essential for further processing.
@@ -2010,19 +2172,19 @@ Internet-Draft                     SRT                     February 2021
 
           -  switches to the "connected" state, and
 
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 36]
-
-Internet-Draft                     SRT                     February 2021
-
-
           -  sends Alice a message with Handshake Type AGREEMENT, but
              containing no SRT extensions (Extension Flags field should
              be 0).
 
        *  If Bob is the Responder (Alice's message contains HSREQ), he:
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 39]
+
+Internet-Draft                     SRT                     February 2021
+
 
           -  switches to "initiated" state,
 
@@ -2066,18 +2228,19 @@ Internet-Draft                     SRT                     February 2021
    In the Attention state they know each other's cookies, so they can
    assign roles.  In contrast to serial flows, which are mostly based on
    request-response cycles, here everything happens completely
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 37]
-
-Internet-Draft                     SRT                     February 2021
-
-
    asynchronously: the state switches upon reception of a particular
    handshake message with appropriate contents (the Initiator MUST
    attach the HSREQ extension, and Responder MUST attach the "HSRSP"
    extension).
+
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 40]
+
+Internet-Draft                     SRT                     February 2021
+
 
    Here is how the parallel handshake flow works, based on roles and
    states:
@@ -2123,16 +2286,17 @@ Internet-Draft                     SRT                     February 2021
 
        *  Receives WAVEAHAND message,
 
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 38]
-
-Internet-Draft                     SRT                     February 2021
-
-
        *  Switches to Attention,
 
        *  Sends CONCLUSION message (with no extensions).
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 41]
+
+Internet-Draft                     SRT                     February 2021
+
 
    2.  Attention
 
@@ -2176,22 +2340,20 @@ Internet-Draft                     SRT                     February 2021
        Initiator sends CONCLUSION + HSREQ, even if it has already
        received and interpreted it.
 
-
-
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 39]
-
-Internet-Draft                     SRT                     February 2021
-
-
    3.  When the Initiator switches to the Connected state it responds
        with a AGREEMENT message, which may be missed by the Responder.
        Nonetheless, the Initiator may start sending data packets because
        it considers itself connected - it does not know that the
        Responder has not yet switched to the Connected state.  Therefore
        it is exceptionally allowed that when the Responder is in the
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 42]
+
+Internet-Draft                     SRT                     February 2021
+
+
        Initiated state and receives a data packet (or any control packet
        that is normally sent only between connected parties) over this
        connection, it may switch to the Connected state just as if it
@@ -2237,7 +2399,13 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 40]
+
+
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 43]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2251,7 +2419,7 @@ Internet-Draft                     SRT                     February 2021
    timing of packets committed by the sending application to the SRT
    sender.  This allows packets to be scheduled for delivery by the SRT
    receiver, making them ready to be read by the receiving application
-   (see Figure 17).
+   (see Figure 20).
 
    The SRT receiver, using the timestamp of the SRT data packet header,
    delivers packets to a receiving application with a fixed minimum
@@ -2283,7 +2451,7 @@ Internet-Draft                     SRT                     February 2021
    putting them out of order when inserted at their proper place in the
    stream.
 
-   Figure 17 illustrates the key latency points during the packet
+   Figure 20 illustrates the key latency points during the packet
    transmission with the TSBPD feature enabled.
 
 
@@ -2293,7 +2461,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 41]
+Sharabayko, et al.       Expires 22 August 2021                [Page 44]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2313,9 +2481,9 @@ Internet-Draft                     SRT                     February 2021
                  ----------------------------------------------------->
                                                                    Time
 
-        Figure 17: Key Latency Points during the Packet Transmission
+        Figure 20: Key Latency Points during the Packet Transmission
 
-   The main packet states shown in Figure 17 are the following:
+   The main packet states shown in Figure 20 are the following:
 
    *  "Scheduled for sending": the packet is committed by the sending
       application, stamped and ready to be sent;
@@ -2349,7 +2517,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 42]
+Sharabayko, et al.       Expires 22 August 2021                [Page 45]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2405,7 +2573,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 43]
+Sharabayko, et al.       Expires 22 August 2021                [Page 46]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2461,7 +2629,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 44]
+Sharabayko, et al.       Expires 22 August 2021                [Page 47]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2517,7 +2685,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 45]
+Sharabayko, et al.       Expires 22 August 2021                [Page 48]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2573,7 +2741,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 46]
+Sharabayko, et al.       Expires 22 August 2021                [Page 49]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2629,7 +2797,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 47]
+Sharabayko, et al.       Expires 22 August 2021                [Page 50]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2685,7 +2853,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 48]
+Sharabayko, et al.       Expires 22 August 2021                [Page 51]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2741,7 +2909,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 49]
+Sharabayko, et al.       Expires 22 August 2021                [Page 52]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2797,7 +2965,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 50]
+Sharabayko, et al.       Expires 22 August 2021                [Page 53]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2853,7 +3021,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 51]
+Sharabayko, et al.       Expires 22 August 2021                [Page 54]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2909,7 +3077,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 52]
+Sharabayko, et al.       Expires 22 August 2021                [Page 55]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -2965,7 +3133,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 53]
+Sharabayko, et al.       Expires 22 August 2021                [Page 56]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3021,7 +3189,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 54]
+Sharabayko, et al.       Expires 22 August 2021                [Page 57]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3077,7 +3245,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 55]
+Sharabayko, et al.       Expires 22 August 2021                [Page 58]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3133,7 +3301,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 56]
+Sharabayko, et al.       Expires 22 August 2021                [Page 59]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3189,7 +3357,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 57]
+Sharabayko, et al.       Expires 22 August 2021                [Page 60]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3245,7 +3413,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 58]
+Sharabayko, et al.       Expires 22 August 2021                [Page 61]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3301,7 +3469,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 59]
+Sharabayko, et al.       Expires 22 August 2021                [Page 62]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3357,7 +3525,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 60]
+Sharabayko, et al.       Expires 22 August 2021                [Page 63]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3413,7 +3581,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 61]
+Sharabayko, et al.       Expires 22 August 2021                [Page 64]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3469,7 +3637,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 62]
+Sharabayko, et al.       Expires 22 August 2021                [Page 65]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3525,7 +3693,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 63]
+Sharabayko, et al.       Expires 22 August 2021                [Page 66]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3581,7 +3749,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 64]
+Sharabayko, et al.       Expires 22 August 2021                [Page 67]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3637,7 +3805,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 65]
+Sharabayko, et al.       Expires 22 August 2021                [Page 68]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3693,7 +3861,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 66]
+Sharabayko, et al.       Expires 22 August 2021                [Page 69]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3749,7 +3917,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 67]
+Sharabayko, et al.       Expires 22 August 2021                [Page 70]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3805,7 +3973,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 68]
+Sharabayko, et al.       Expires 22 August 2021                [Page 71]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3861,7 +4029,7 @@ Normative References
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 69]
+Sharabayko, et al.       Expires 22 August 2021                [Page 72]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3917,7 +4085,7 @@ Informative References
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 70]
+Sharabayko, et al.       Expires 22 August 2021                [Page 73]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -3973,7 +4141,7 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 71]
+Sharabayko, et al.       Expires 22 August 2021                [Page 74]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -4014,7 +4182,7 @@ Appendix A.  Packet Sequence List Coding
    |0|                   Sequence Number                           |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-                 Figure 18: Single sequence numbers coding
+                 Figure 21: Single sequence numbers coding
 
    For any consecutive packet sequence numbers that the difference
    between the last and first is more than 1, only record the first (a)
@@ -4029,7 +4197,7 @@ Appendix A.  Packet Sequence List Coding
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 72]
+Sharabayko, et al.       Expires 22 August 2021                [Page 75]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -4042,7 +4210,7 @@ Internet-Draft                     SRT                     February 2021
    |0|                   Sequence Number b (last)                  |
    +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
-                Figure 19: Range of sequence numbers coding
+                Figure 22: Range of sequence numbers coding
 
 Appendix B.  SRT Access Control
 
@@ -4085,7 +4253,7 @@ B.1.  General Syntax
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 73]
+Sharabayko, et al.       Expires 22 August 2021                [Page 76]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -4141,7 +4309,7 @@ B.2.  Standard Keys
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 74]
+Sharabayko, et al.       Expires 22 August 2021                [Page 77]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -4197,7 +4365,7 @@ C.1.  Since Version 00
 
 
 
-Sharabayko, et al.       Expires 22 August 2021                [Page 75]
+Sharabayko, et al.       Expires 22 August 2021                [Page 78]
 
 Internet-Draft                     SRT                     February 2021
 
@@ -4232,6 +4400,9 @@ C.2.  Since Version 01
    *  Overall corrections throughout the document: fixed lists,
       punctuation, etc.
 
+   *  Added missing control packets: Drop Request, Peer Error,
+      Congestion Warning.
+
 Authors' Addresses
 
    Maxim Sharabayko
@@ -4246,16 +4417,19 @@ Authors' Addresses
    Email: msharabayko@haivision.com
 
 
+
+
+
+
+Sharabayko, et al.       Expires 22 August 2021                [Page 79]
+
+Internet-Draft                     SRT                     February 2021
+
+
    Jean Dube
    Haivision Systems, Inc.
 
    Email: jdube@haivision.com
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 76]
-
-Internet-Draft                     SRT                     February 2021
 
 
    Jeongseok Kim
@@ -4303,10 +4477,4 @@ Internet-Draft                     SRT                     February 2021
 
 
 
-
-
-
-
-
-
-Sharabayko, et al.       Expires 22 August 2021                [Page 77]
+Sharabayko, et al.       Expires 22 August 2021                [Page 80]
