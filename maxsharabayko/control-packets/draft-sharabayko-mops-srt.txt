@@ -95,7 +95,7 @@ Table of Contents
      4.1.  Stream Multiplexing . . . . . . . . . . . . . . . . . . .  30
      4.2.  Data Transmission Modes . . . . . . . . . . . . . . . . .  31
        4.2.1.  Message Mode  . . . . . . . . . . . . . . . . . . . .  31
-       4.2.2.  Live Mode . . . . . . . . . . . . . . . . . . . . . .  31
+       4.2.2.  Live Mode . . . . . . . . . . . . . . . . . . . . . .  32
        4.2.3.  Buffer Mode . . . . . . . . . . . . . . . . . . . . .  32
      4.3.  Handshake Messages  . . . . . . . . . . . . . . . . . . .  32
        4.3.1.  Caller-Listener Handshake . . . . . . . . . . . . . .  35
@@ -1547,15 +1547,15 @@ Internet-Draft                     SRT                     February 2021
 
 3.2.9.  Message Drop Request
 
-   The Message Drop Request is sent by the sender to the receiver in
-   case of some internal error, when an unacknowledged packet is not
-   present in sender's buffer.  Thus the sender notifies the receiver
-   that it must not wait for retransmission of this message.  Note the
-   Message Drop Request is not sent if sender decides to drop a message
-   according to the Too Late Packet Drop mechanism (Section 4.6), as in
-   this case the receiver is expected to drop it anyway due to the same
-   mechanism.
-
+   A Message Drop Request control packet is sent by the sender to the
+   receiver when it requests the retransmission of an unacknowledged
+   packet (all or part of a message) which is not present in the
+   sender's buffer (due to an internal error).  The sender notifies the
+   receiver that it must not wait for retransmission of this message.
+   Note that a Message Drop Request control packet is not sent if the
+   Too Late Packet Drop mechanism (Section 4.6) causes the sender to
+   drop a message, as in this case the receiver is expected to drop it
+   anyway.
 
 
 
@@ -1588,8 +1588,8 @@ Internet-Draft                     SRT                     February 2021
 
                    Figure 18: Drop Request control packet
 
-   Packet Type: 1 bit, value = 1.  The packet type value of an ACKACK
-      control packet is "1".
+   Packet Type: 1 bit, value = 1.  The packet type value of a Drop
+      Request control packet is "1".
 
    Control Type: 15 bits, value = 7.  The control type value of a Drop
       Request control packet is "7".
@@ -1610,14 +1610,14 @@ Internet-Draft                     SRT                     February 2021
 
 3.2.10.  Peer Error
 
-   This control packet is only used if file congestion control is
-   enabled.  The Peer Error control packet is signaled from the
-   receiving side in case to some processing failures (e.g., write to
-   disk has failed), to inform the sender about such situation and
-   unblock it from waiting further response from the peer.
+   The Peer Error control packet is sent by a receiver when a processing
+   error (e.g. write to disk failure) occurs.  This informs the sender
+   of the situation and unblocks it from waiting for further responses
+   from the receiver.
 
    The sender receiving this type of control packet must unblock any
    sending operation in progress.
+
 
 
 
@@ -1625,6 +1625,9 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 29]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   *NOTE*: This control packet is only used if file congestion control
+   is enabled.
 
     0                   1                   2                   3
     0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 0 1
@@ -1640,9 +1643,11 @@ Internet-Draft                     SRT                     February 2021
 
                     Figure 19: Peer Error control packet
 
-   Packet Type: 1 bit, value = 1.  The packet type value is "1".
+   Packet Type: 1 bit, value = 1.  The packet type value of a Peer Error
+      control packet is "1".
 
-   Control Type: 15 bits, value = 8.  The control type value is "8".
+   Control Type: 15 bits, value = 8.  The control type value of a Peer
+      Error control packet is "8".
 
    Error Code: 32 bits.  Peer error code.  At the moment the only value
       defined is 4000 - file system error.
@@ -1668,11 +1673,6 @@ Internet-Draft                     SRT                     February 2021
    packets received to this UDP socket will be correctly dispatched to
    those SRT sockets they are currently destined.
 
-   During the handshake, the parties exchange their SRT Socket IDs.
-   These IDs are then used in the Destination Socket ID field of every
-   control and data packet (see Section 3).
-
-
 
 
 
@@ -1681,6 +1681,10 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 30]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   During the handshake, the parties exchange their SRT Socket IDs.
+   These IDs are then used in the Destination Socket ID field of every
+   control and data packet (see Section 3).
 
 4.2.  Data Transmission Modes
 
@@ -1725,10 +1729,6 @@ Internet-Draft                     SRT                     February 2021
    an application to read messages that are already fully available,
    before any preceding messages that may have some packets missing.
 
-4.2.2.  Live Mode
-
-   Live mode is a special type of message mode where only data packets
-   with their PP field set to "11b" are allowed.
 
 
 
@@ -1737,6 +1737,11 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 31]
 
 Internet-Draft                     SRT                     February 2021
 
+
+4.2.2.  Live Mode
+
+   Live mode is a special type of message mode where only data packets
+   with their PP field set to "11b" are allowed.
 
    Additionally Timestamp-Based Packet Delivery (TSBPD) (Section 4.5)
    and Too-Late Packet Drop (Section 4.6) mechanisms are used in this
@@ -1781,11 +1786,6 @@ Internet-Draft                     SRT                     February 2021
    *  Initiator starts an extended SRT handshake process and sends
       appropriate SRT extended handshake requests.
 
-   *  Responder expects the SRT extended handshake requests to be sent
-      by the Initiator and sends SRT extended handshake responses back.
-
-   There are three basic types of SRT handshake extensions that are
-   exchanged in the handshake:
 
 
 
@@ -1793,6 +1793,12 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 32]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   *  Responder expects the SRT extended handshake requests to be sent
+      by the Initiator and sends SRT extended handshake responses back.
+
+   There are three basic types of SRT handshake extensions that are
+   exchanged in the handshake:
 
    *  Handshake Extension Message exchanges the basic SRT information;
 
@@ -1834,12 +1840,6 @@ Internet-Draft                     SRT                     February 2021
 
    3.  After receiving the above message from the peer: AGREEMENT.
 
-   When a connection process has failed before either party can send the
-   CONCLUSION handshake, the Handshake Type field will contain the
-   appropriate error value for the rejected connection.  See the list of
-   error codes in Table 7.
-
-
 
 
 
@@ -1849,6 +1849,11 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 33]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   When a connection process has failed before either party can send the
+   CONCLUSION handshake, the Handshake Type field will contain the
+   appropriate error value for the rejected connection.  See the list of
+   error codes in Table 7.
 
     +======+================+=========================================+
     | Code | Error          | Description                             |
@@ -1893,11 +1898,6 @@ Internet-Draft                     SRT                     February 2021
    MUST be agreed upon at the outset because when both are set the
    Responder wins.  For Caller-Listener connections it is reasonable to
    set this value on the Listener only.  In the case of Rendezvous the
-   only reasonable approach is to decide upon the correct value from the
-   different sources and to set it on both parties (note that *AES-128*
-   is the default).
-
-
 
 
 
@@ -1905,6 +1905,10 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 34]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   only reasonable approach is to decide upon the correct value from the
+   different sources and to set it on both parties (note that *AES-128*
+   is the default).
 
 4.3.1.  Caller-Listener Handshake
 
@@ -1951,16 +1955,14 @@ Internet-Draft                     SRT                     February 2021
 
    *  Handshake Type: INDUCTION
 
-   *  SRT Socket ID: Socket ID of the Listener
-
-
-
 
 
 Sharabayko, et al.       Expires 22 August 2021                [Page 35]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   *  SRT Socket ID: Socket ID of the Listener
 
    *  SYN Cookie: a cookie that is crafted based on host, port and
       current time with 1 minute accuracy to avoid SYN flooding attack
@@ -2007,8 +2009,6 @@ Internet-Draft                     SRT                     February 2021
 
    *  Encryption Flags: advertised cipher family and block size
 
-   *  Extension Flags: a set of flags that define the extensions
-      provided in the handshake
 
 
 
@@ -2017,6 +2017,9 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 36]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   *  Extension Flags: a set of flags that define the extensions
+      provided in the handshake
 
    *  The Destination Socket ID in this message is the socket ID that
       was previously received in the induction phase in the SRT Socket
@@ -2063,9 +2066,6 @@ Internet-Draft                     SRT                     February 2021
    socket is bound to INADDR_ANY, or to the same IP address to which the
    socket was bound.  If the cookies are identical (for any reason), the
    connection will not be made until new, unique cookies are generated
-   (after a delay of up to one minute).  In the case of an application
-   "connecting to itself", the cookies will always be identical, and so
-   the connection will never be established.
 
 
 
@@ -2073,6 +2073,10 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 37]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   (after a delay of up to one minute).  In the case of an application
+   "connecting to itself", the cookies will always be identical, and so
+   the connection will never be established.
 
    When one party's cookie value is greater than its peer's, it wins the
    cookie contest and becomes Initiator (the other party becomes the
@@ -2119,16 +2123,15 @@ Internet-Draft                     SRT                     February 2021
        Bob's cookie is greater than Alice's, he will become the
        Initiator.  Otherwise, he will become the Responder.
 
-       The resolution of the Handshake Role (Initiator or Responder) is
-       essential for further processing.
-
-
 
 
 Sharabayko, et al.       Expires 22 August 2021                [Page 38]
 
 Internet-Draft                     SRT                     February 2021
 
+
+       The resolution of the Handshake Role (Initiator or Responder) is
+       essential for further processing.
 
        Then Bob responds:
 
@@ -2175,9 +2178,6 @@ Internet-Draft                     SRT                     February 2021
 
        *  If Bob is the Responder (Alice's message contains HSREQ), he:
 
-          -  switches to "initiated" state,
-
-
 
 
 
@@ -2185,6 +2185,8 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 39]
 
 Internet-Draft                     SRT                     February 2021
 
+
+          -  switches to "initiated" state,
 
           -  sends Alice a message with Handshake Type CONCLUSION that
              also contains extensions with HSRSP, and
@@ -2231,8 +2233,6 @@ Internet-Draft                     SRT                     February 2021
    attach the HSREQ extension, and Responder MUST attach the "HSRSP"
    extension).
 
-   Here is how the parallel handshake flow works, based on roles and
-   states:
 
 
 
@@ -2241,6 +2241,9 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 40]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   Here is how the parallel handshake flow works, based on roles and
+   states:
 
    (1) Initiator
 
@@ -2287,9 +2290,6 @@ Internet-Draft                     SRT                     February 2021
 
        *  Sends CONCLUSION message (with no extensions).
 
-   2.  Attention
-
-
 
 
 
@@ -2297,6 +2297,8 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 41]
 
 Internet-Draft                     SRT                     February 2021
 
+
+   2.  Attention
 
        *  Receives CONCLUSION message with HSREQ.  This message might
           contain no extensions, in which case the party SHALL simply
@@ -2338,14 +2340,12 @@ Internet-Draft                     SRT                     February 2021
        Initiator sends CONCLUSION + HSREQ, even if it has already
        received and interpreted it.
 
-
-
-
-
-
-
-
-
+   3.  When the Initiator switches to the Connected state it responds
+       with a AGREEMENT message, which may be missed by the Responder.
+       Nonetheless, the Initiator may start sending data packets because
+       it considers itself connected - it does not know that the
+       Responder has not yet switched to the Connected state.  Therefore
+       it is exceptionally allowed that when the Responder is in the
 
 
 
@@ -2354,12 +2354,6 @@ Sharabayko, et al.       Expires 22 August 2021                [Page 42]
 Internet-Draft                     SRT                     February 2021
 
 
-   3.  When the Initiator switches to the Connected state it responds
-       with a AGREEMENT message, which may be missed by the Responder.
-       Nonetheless, the Initiator may start sending data packets because
-       it considers itself connected - it does not know that the
-       Responder has not yet switched to the Connected state.  Therefore
-       it is exceptionally allowed that when the Responder is in the
        Initiated state and receives a data packet (or any control packet
        that is normally sent only between connected parties) over this
        connection, it may switch to the Connected state just as if it
@@ -2402,6 +2396,12 @@ Internet-Draft                     SRT                     February 2021
    information, in milliseconds, from the SRT receiver and sender.  The
    latency for a connection will be established as the maximum value of
    latencies proposed by the initiator and responder.
+
+
+
+
+
+
 
 
 
